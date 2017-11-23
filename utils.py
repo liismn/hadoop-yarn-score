@@ -2,6 +2,17 @@
 """
 import time
 
+class QueueWish(object):
+    def __init__(self):
+        self.name = ''
+        self.abs_capacity = 0.0
+        self.capacity = 0.0
+        self.vmem = 0.0
+        self.vcpu = 0.0
+
+    def display(self):
+        print('queue name: %s, mem: %.2f' %(self.name, self.vmem))
+
 class QueueConfig(object):
     def __init__(self):
         self.capacity = 0
@@ -16,8 +27,8 @@ class QueueConfig(object):
 
 class Job(object):
     def __init__(self, waitTime=0, runTime=0, vcore=0, memorySeconds=0):
-        self.wait_time = waitTime
-        self.run_time = runTime
+        self.wait_time = float(waitTime)
+        self.run_time = float(runTime)
         self.memory_seconds = memorySeconds
         self.name = ""
 

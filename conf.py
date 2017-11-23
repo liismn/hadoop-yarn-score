@@ -15,7 +15,9 @@ class Config(object):
         self.cluster_metric_path = '../hadoop_util/output/cluster2.csv'
         self.yarn_config_path = './conf/yarn_config.xml'
         self.stat_output_file = './hadoop/stat.txt'
+        self.prediction_path = './hadoop/prediction.csv'
         self.total_sys_memory = 65536
+
 
         self.next_update_time = cur_time 
         self.scheduler_metric_ts = cur_time 
@@ -29,6 +31,12 @@ class Config(object):
 
     def set_cluster_metric_path(self, path):
         self.cluster_metric_path = path
+
+    def get_prediction_path(self):
+        return self.prediction_path
+
+    def set_prediction_path(self, path):
+        self.prediction_path = path
 
     def get_stat_output_file(self):
         return self.stat_output_file
@@ -109,6 +117,7 @@ class Config(object):
         self.set_job_metric_path(data['job_metric_path'])
         self.set_scheduler_metric_path(data['scheduler_metric_path'])
         self.set_stat_interval(data['stat_interval'])
+        self.set_prediction_path(data['prediction_path'])
         self.set_update_interval(data['update_interval'])
         self.set_cluster_metric_path(data['cluster_metric_path'])
         self.set_stat_output_file(data['stat_output_file'])
@@ -125,10 +134,11 @@ class Config(object):
         print('job_metric_path: \t%s' % self.job_metric_path)
         print('scheduler_metric_path: \t%s' % self.scheduler_metric_path)
         print('cluster_metric_path: \t%s' % self.cluster_metric_path)
+        print('prediction_path \t%s' % self.prediction_path)
         print('update_interval: \t%ld' % self.update_interval)
         print('stat_interval: \t%ld' % self.stat_interval)
         print('stat_output_file \t%s' % self.stat_output_file)
-        print('sys_total_memory \t%ld' % self.sys_total_memory)
+        print('sys_total_memory \t%ld' % self.total_sys_memory)
         print('--------------------------------')
 
 def get_mtime(filename):

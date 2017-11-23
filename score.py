@@ -1,6 +1,3 @@
-# !/usr/bin/env python
-# encoding=utf8
-
 import os
 import argparse
 import resource_manager 
@@ -58,7 +55,6 @@ def update_app_info(rmq, cfg):
 
 
 # parse csv file which includes the total memory of root queue 
-# return the total memory of root queue
 def update_cluster_info(rmq, cfg):
     cluster_file = cfg.get_cluster_metric_path()
     ts = get_mtime(cluster_file)
@@ -69,16 +65,44 @@ def update_cluster_info(rmq, cfg):
         queue = rmq.get_queue('root')
         queue.data.add_totalMb(totalMb)
         cfg.update_cluster_timestamp(ts)
-        queue.data.cal_totalMb_mean()
+        # queue.data.cal_totalMb_mean()
+
+# parse csv file which includes the prediction of each leaf queue
+def update_predict_info(rmq, cfg):
+    prediction_file = cfg.get_prediction_path()
+    queue_wishes = datainput.read_prediction_csv(prediction_file)
+    for wish in queue_wishes:
+        queue = rmq.get_queue(wish.name)
+        if queue is None:
+            print("Unkonw queue name", job.name)
+            continue 
+        queue.data.update_queue_wish(wish)
         
 
+
+def update_info(rmq, cfg):
+    update_scheduler_info(rmq, cfg)
+    update_cluster_info(rmq, cfg)
+    update_app_info(rmq, cfg)
+
+def score(rmq, cfg):
+    rmq.score()
+    rmq.display_score()
+    path = cfg.get_stat_output_file()
+    rmq.write_score(path)
+
+def predict(rmq, cfg):
+    update_predict_info(rmq, cfg)
+    rmq.predict()
+    rmq.display_prediction()
 
 def start(cfg):
     cluster_file, scheduler_file, app_file = update_filepath(cfg)
     rmq = resource_manager.parseYarnConfig(cfg.yarn_config_path)
     rmq.set_stat_interval(cfg.get_stat_interval())
     rmq.set_system_memory(cfg.get_sys_total_memory())
-    rmq.display()
+    print('Starting to collecting and scoring ... ')
+    # rmq.display() 
     while True:
         update_scheduler_info(rmq, cfg) 
         update_cluster_info(rmq, cfg) 

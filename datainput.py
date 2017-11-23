@@ -14,20 +14,20 @@ from utils import Job, QueueConfig
 # QUEUE_NAME_INDEX = 8
 # QUEUE_STATE_INDEX = 9
 def read_scheduler_csv(path):
-    obj = pd.read_csv(path)
-    cols = obj.columns.tolist()
+    df = pd.read_csv(path)
+    # cols = df.columns.tolist()
     confs = [] 
-    for row in range(obj.shape[0]):
+    for index, row in df.iterrows():
         queue_config = QueueConfig()
-        queue_config.capacity = obj.iloc[row][1]
-        queue_config.max_capacity = obj.iloc[row][3]
-        queue_config.abs_capacity = float(obj.iloc[row][4])
-        queue_config.name = obj.iloc[row][8]
-        queue_config.state = obj.iloc[row][9]
+        queue_config.capacity = float(row[1])
+        queue_config.max_capacity = float(row[3])
+        queue_config.abs_capacity = float(row[4])
+        queue_config.name = row[8]
+        queue_config.state = row[9]
         confs.append(queue_config)
         """
         for i in range(obj.shape[1]):
-            print(i, cols[i], obj.iloc[row][i])
+            print(i, cols[i], row[i])
         print('-----------------------------------')
         """
     return confs
@@ -47,19 +47,19 @@ def read_cluster_csv(path):
 # RUN_TIME_INDEX = 16
 # MEMORY_SECONDS_INDEX = 22
 def read_app_csv(path):
-    obj = pd.read_csv(path)
-    cols = obj.columns.tolist()
+    df = pd.read_csv(path)
+    # cols = df.columns.tolist()
     jobs = []
-    for row in range(obj.shape[0]):
+    for index, row in df.iterrows():
         job = Job()
-        job.name = obj.iloc[row][3]
+        job.name = row[3]
         job.wait_time = np.random.randint(50) #暂时用随机数模拟
-        job.run_time = obj.iloc[row][16] * 0.001 
-        job.memory_seconds = obj.iloc[row][22]
+        job.run_time = row[16] * 0.001 
+        job.memory_seconds = row[22]
         jobs.append(job)
         """
         for i in range(obj.shape[1]):
-            print(i, cols[i], obj.iloc[row][i])
+            print(i, cols[i], row[i])
         print( '-----------------------------------')
         """
     return jobs
