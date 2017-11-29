@@ -1,6 +1,6 @@
 import numpy as np
 import xml.etree.ElementTree as ET
-from utils import Job, QueueConfig, QueueWish
+from utils import Job, QueueConfig, QueueWish, Singleton
 from treelib import Node, Tree
 import utils
 
@@ -98,7 +98,7 @@ class QueueData(object):
         self.wish.vmem += float(queue_wish.vmem)
         self.wish.vcpu += float(queue_wish.vcpu)
         # To be fixed
-        self.wish.abs_capacity = queue_wish.vmem 
+        self.wish.abs_capacity += queue_wish.vmem 
 
     def get_mem_usage(self):
         return self.cur_metric.mem_usage
@@ -115,7 +115,7 @@ class QueueData(object):
     def get_job_count(self):
         return self.cur_metric.job_count
 
-class RMQueue(object):
+class RMQueue(metaclass=Singleton):
     MAX_METRIC_COUNT = 12 
     CAL_INTERVAL_IN_SECOND = 2 * 60 * 60 # 2hours
     def __init__(self):
@@ -138,15 +138,24 @@ class RMQueue(object):
     def display_score(self, queue=None, depth=0):
         if queue is None:
             queue = self.get_root()
-            print('------------' + utils.get_str_time()+'----------')
+            print('------------' + utils.get_str_time()+' SCORE ----------')
+            print(24*' ' + '     SLOWDOWN                MEMORY USAGE ')
+            print('QUEUE NAME' + 16*' ' +' AVG        DIV            AVG        DIV')    
 
-        if depth == 0:
+        if depth >= 0:
+             print(queue.tag + (22 - len(queue.tag))*' ' + \
+                                '%8.3f' % queue.data.get_slowdown(),  \
+                                '  %8.3f    ' % queue.data.get_slowdown_div(), \
+                                '  %8.3f' % queue.data.get_mem_usage(), \
+                                '  %8.3f' % queue.data.get_mem_usage_div())
+             """                                              
              print(queue.tag, '(slowdown: %.3f' % queue.data.get_slowdown(), \
                               'div: %.3f)' % queue.data.get_slowdown_div(), \
                               '(mem usage: %.3f' % queue.data.get_mem_usage(), \
                               'div: %.3f)' % queue.data.get_mem_usage_div())
+             """                                              
         else:  
-             print('*' + '-'*depth + queue.tag, '(slowdown: %.3f' % queue.data.get_slowdown(), \
+             print('-'*depth + queue.tag, '(slowdown: %.3f' % queue.data.get_slowdown(), \
                               'div: %.3f)' % queue.data.get_slowdown_div(), \
                               '(mem usage: %.3f' % queue.data.get_mem_usage(), \
                               'div: %.3f)' % queue.data.get_mem_usage_div())
@@ -159,12 +168,14 @@ class RMQueue(object):
     def display_prediction(self, queue=None, depth=0):
         if queue is None:
             queue = self.get_root()
-            print('------------' + utils.get_str_time()+'----------')
+            print('------------' + utils.get_str_time()+' PREDICTION ----------')
+            print('QUEUE NAME            DESIRED CAPACITY')
 
-        if depth == 0:
-             print(queue.tag, 'desired capacity: %.3f' % queue.data.wish.capacity)
+        if depth >= 0:
+             print(queue.tag + (22 - len(queue.tag))*' ', ' %8.3f' % queue.data.wish.capacity)
+             # print(queue.tag, 'desired capacity: %.3f' % queue.data.wish.capacity)
         else:  
-             print('*' + '-'*depth + queue.tag, 'desired capacity: %.3f' % queue.data.wish.capacity)
+             print('-'*depth + queue.tag, 'desired capacity: %.3f' % queue.data.wish.capacity)
          
         if self.is_leaf(queue.tag) == False:
              children = self.tree.children(queue.tag)
@@ -178,15 +189,24 @@ class RMQueue(object):
     def write_score_top_down(self, queue=None, depth=0, output=None):
         if queue is None:
             queue = self.get_root()
-            output.writelines(('\n---------', utils.get_str_time(), '---------\n'))
+            output.writelines(('\n---------', utils.get_str_time(), '  SCORE ---------\n'))
+            output.writelines(24*' ' + '     SLOWDOWN                MEMORY USAGE\n')
+            output.writelines('QUEUE NAME' + 16*' ' +' AVG        DIV            AVG        DIV\n')    
         
-        if depth == 0:
+        if depth >= 0:
+             output.writelines(queue.tag + (22 - len(queue.tag))*' ' + \
+                                '%8.3f' % queue.data.get_slowdown() +   \
+                                '  %8.3f    ' % queue.data.get_slowdown_div() + \
+                                '  %8.3f' % queue.data.get_mem_usage() + \
+                                '  %8.3f' % queue.data.get_mem_usage_div() + '\n')
+             """
              output.writelines( (queue.tag, ' (slowdown: %.3f' % queue.data.get_slowdown(), \
                               ' div: %.3f)' % queue.data.get_slowdown_div(), \
                               ' (mem usage: %.3f' % queue.data.get_mem_usage(), \
                               ' div: %.3f)' % queue.data.get_mem_usage_div(), '\n'))
+             """
         else:  
-             output.writelines(( '*' + '-'*depth + queue.tag, ' (slowdown: %.3f' % queue.data.get_slowdown(), \
+             output.writelines(('-'*depth + queue.tag, ' (slowdown: %.3f' % queue.data.get_slowdown(), \
                               ' div: %.3f)' % queue.data.get_slowdown_div(), \
                               ' (mem usage: %.3f' % queue.data.get_mem_usage(), \
                               ' div: %.3f)' % queue.data.get_mem_usage_div(), '\n'))
@@ -203,12 +223,14 @@ class RMQueue(object):
     def write_prediction_top_down(self, queue=None, depth=0, output=None):
         if queue is None:
             queue = self.get_root()
-            output.writelines(('\n---------', utils.get_str_time(), '---------\n'))
+            output.writelines(('\n---------', utils.get_str_time(), '  PREDICTION---------\n'))
+            output.writelines('QUEUE NAME            DESIRED CAPACITY\n')
         
-        if depth == 0:
-             output.writelines( (queue.tag, ' desired capacity: %.3f' % queue.data.wish.capacity, '\n'))
+        if depth >= 0:
+             output.writelines(queue.tag + (22 - len(queue.tag))*' '+ ' %8.3f' % queue.data.wish.capacity+'\n')
+             # output.writelines( (queue.tag, ' desired capacity: %.3f' % queue.data.wish.capacity, '\n'))
         else:  
-             output.writelines(( '*' + '-'*depth + queue.tag, \
+             output.writelines(('-'*depth + queue.tag, \
                                  ' desired capacity: %.3f' % queue.data.wish.capacity, '\n'))
          
         if self.is_leaf(queue.tag) == False:
@@ -401,6 +423,7 @@ class RMQueue(object):
             total_mem_usage = 0
             for child in children:
                 total_mem_usage += child.data.get_mem_usage()
+                # print(child.data.get_mem_usage())
             avg_mem_usage = total_mem_usage / count
 
             # Finally, calculate the standard division of the queue
@@ -433,11 +456,22 @@ class RMQueue(object):
             return
         else:
            children = self.tree.children(queue.tag) 
-           abs_capacity = 0
+           abs_capacity = 0.0
+           fixed_capacity = 0.0
            for child in children:
                self.cal_desired_abs_capacity_bottom_up(child)
-               abs_capacity += child.data.wish.abs_capacity
-           queue.data.wish.abs_capacity = abs_capacity
+               if child.data.config.state == "FIXED": 
+                   # print("FIXED")
+                   # print(child.data.config.capacity)
+                   # print(child.data.config.abs_capacity)
+                   fixed_capacity += child.data.config.capacity
+               else:
+                   abs_capacity += child.data.wish.abs_capacity
+           
+           for child in children:
+               if child.data.config.state == "FIXED":
+                   child.data.wish.abs_capacity = abs_capacity/(100.0 - fixed_capacity) * child.data.config.capacity
+           queue.data.wish.abs_capacity = abs_capacity * 100.0 / (100.0 - fixed_capacity)
 
     def clear_desired_abs_capacity(self, queue=None):
         if queue is None:
@@ -466,6 +500,7 @@ class RMQueue(object):
             children = self.tree.children(queue.tag)
             for child in children:
                  child.data.set_abs_capacity(queue.data.get_abs_capacity()*child.data.get_capacity()/100.0)
+                 # print(child.data.get_abs_capacity())
                  self.cal_capacity_top_down(child)
                  
 
@@ -479,11 +514,9 @@ class RMQueue(object):
         else:
             children = self.tree.children(queue.tag) 
             abs_capacity = queue.data.wish.abs_capacity
+            remain_capaciy = 100.0
             for child in children:
-                if child.data.wish.abs_capacity == 0:
-                    child.data.wish.capacity = 0
-                else:
-                    child.data.wish.capacity = child.data.wish.abs_capacity / abs_capacity * 100.0
+                child.data.wish.capacity = child.data.wish.abs_capacity / abs_capacity * 100.0
                 self.cal_desired_capacity_top_down(child)
 
     def cal_capacity_top_down(self, queue=None):
@@ -616,6 +649,7 @@ def parseYarnConfig(conf):
         if len(names) < 5:
             continue
 
+        # print(name.text)
         same = True
         for i in range(4):
             if names[i] != YARN_CONFIG_HEAD[i]:
@@ -722,6 +756,8 @@ if __name__ == '__main__':
     hive = rmq.get_queue("hive")
     spark.data.wish.abs_capacity = 26.0
     hive.data.wish.abs_capacity = 156.0
+    
+    rmq.display_score()
     rmq.predict()
     rmq.display_prediction()
     rmq.write_prediction('test.txt')

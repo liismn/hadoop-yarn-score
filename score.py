@@ -1,9 +1,8 @@
-import os
+import os, time
 import argparse
 import resource_manager 
 import conf
 import datainput
-import time
 
 FLAGS = None
 
@@ -19,53 +18,60 @@ def get_mtime(filename):
     return info.st_mtime
 
 # parse csv file which includes queue info gathered from yarn scheduler
-# return a list of queue config
 def update_scheduler_info(rmq, cfg):
     scheduler_file = cfg.get_scheduler_metric_path()
     ts = get_mtime(scheduler_file)
     # if True or ts > cfg.get_scheduler_timestamp():
-    if ts > cfg.get_scheduler_timestamp():
-        queue_configs = datainput.read_scheduler_csv(scheduler_file) 
-        for qc in queue_configs:
-            queue = rmq.get_queue(qc.name)
-            if queue is None:
-                print("Unkonw queue name", qc.name)
-                continue 
-            queue.data.update_queue_config(qc)
-            #print(qc.name)
-        cfg.update_scheduler_timestamp(ts)
+    # if ts > cfg.get_scheduler_timestamp():
+    queue_configs = datainput.read_scheduler_csv(scheduler_file) 
+    for qc in queue_configs:
+        queue = rmq.get_queue(qc.name)
+        if queue is None:
+            print("Unknown queue name", qc.name)
+            continue 
+        queue.data.update_queue_config(qc)
+        #print(qc.name)
+    #   cfg.update_scheduler_timestamp(ts)
 
 
 # parse csv file which includes app info gathered from yarn scheduler
-# return a list of job
 def update_app_info(rmq, cfg):
     app_file = cfg.get_job_metric_path()
-    ts = get_mtime(app_file)
+    # ts = get_mtime(app_file)
     # if True or ts > cfg.get_job_timestamp():
-    if ts > cfg.get_job_timestamp():
-        jobs = datainput.read_app_csv(app_file) 
-        for job in jobs:
-            queue = rmq.get_queue(job.name)
-            if queue is None:
-                print("Unkonw queue name", job.name)
-                continue 
-            queue.data.add_job(job)
-        cfg.update_job_timestamp(ts)
+    # if ts > cfg.get_job_timestamp():
+    jobs = datainput.read_app_csv(app_file) 
+    # if ts > cfg.get_app_timestamp():
+    for job in jobs:
+        queue = rmq.get_queue(job.name)
+        if queue is None:
+            print("Unkonw queue name", job.name)
+            continue 
+        queue.data.add_job(job)
+    #   cfg.update_job_timestamp(ts)
 
-
+# parse csv file which includes prediction info 
+def update_prediction_info(rmq, cfg):
+    prediction_file = cfg.get_prediction_file()
+    wishes = datainput.read_prediction_csv(prediction_file) 
+    for wish in wishes:
+        queue = rmq.get_queue(wish.name)
+        if queue is None:
+            print("Unknow queue name", wish.name)
+            continue
+        queue.data.update_wish(wish)
 
 # parse csv file which includes the total memory of root queue 
 def update_cluster_info(rmq, cfg):
     cluster_file = cfg.get_cluster_metric_path()
     ts = get_mtime(cluster_file)
-    if ts > cfg.get_cluster_timestamp():
-        totalMb = datainput.read_cluster_csv(cluster_file) 
-        if totalMb == 0:
-            return
-        queue = rmq.get_queue('root')
-        queue.data.add_totalMb(totalMb)
-        cfg.update_cluster_timestamp(ts)
-        # queue.data.cal_totalMb_mean()
+    totalMb = datainput.read_cluster_csv(cluster_file) 
+    if totalMb == 0:
+        return
+    queue = rmq.get_queue('root')
+    queue.data.add_totalMb(totalMb)
+    # cfg.update_cluster_timestamp(ts)
+    # queue.data.cal_totalMb_mean()
 
 # parse csv file which includes the prediction of each leaf queue
 def update_predict_info(rmq, cfg):
@@ -95,6 +101,8 @@ def predict(rmq, cfg):
     update_predict_info(rmq, cfg)
     rmq.predict()
     rmq.display_prediction()
+    path = cfg.get_stat_output_file()
+    rmq.write_prediction(path)
 
 def start(cfg):
     cluster_file, scheduler_file, app_file = update_filepath(cfg)
@@ -102,7 +110,9 @@ def start(cfg):
     rmq.set_stat_interval(cfg.get_stat_interval())
     rmq.set_system_memory(cfg.get_sys_total_memory())
     print('Starting to collecting and scoring ... ')
-    # rmq.display() 
+    import restserver
+    restserver.start_server(cfg.get_rest_port())
+    """
     while True:
         update_scheduler_info(rmq, cfg) 
         update_cluster_info(rmq, cfg) 
@@ -114,12 +124,14 @@ def start(cfg):
             rmq.display_score()
             pass
         time.sleep(cfg.get_update_interval()) 
-
+    """
     
 def main(config_path):
     cfg = conf.Config(config_path)
+    print(cfg.config_file_path)
     cfg.update_config()
-    cfg.init_all_timestamp()
+    test_cfg = conf.Config()
+    # cfg.init_all_timestamp()
     start(cfg)
 
 

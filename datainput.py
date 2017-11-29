@@ -5,7 +5,7 @@
 
 import pandas as pd
 import numpy as np 
-from utils import Job, QueueConfig
+from utils import Job, QueueConfig, QueueWish
 
 
 # CAPACITY_INDEX = 1 
@@ -63,6 +63,21 @@ def read_app_csv(path):
         print( '-----------------------------------')
         """
     return jobs
+
+# 0, time_step
+# 1, mem_predicion
+# 2, cpu_prediction
+# 3, queue_name
+def read_prediction_csv(path):
+    df = pd.read_csv(path)
+    wishes = []
+    for index, row in df.iterrows():
+        wish = QueueWish() 
+        wish.vmem = row[1]
+        wish.vcpu = row[2]
+        wish.name = row[3]
+        wishes.append(wish)
+    return wishes
 
 if __name__ == '__main__':
     jobs = read_app_csv('./hadoop/app.csv')

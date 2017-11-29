@@ -5,7 +5,7 @@
 
 import pandas as pd
 import numpy as np 
-from utils import Job, QueueConfig
+from utils import Job, QueueConfig, QueueWish
 
 
 # CAPACITY_INDEX = 1 
@@ -16,11 +16,12 @@ from utils import Job, QueueConfig
 def read_scheduler_csv(path):
     confs = [] 
     queue = ['spark', 'hive']
+    capacity = [25,35]
     for i in range(2):
         queue_config = QueueConfig()
-        queue_config.capacity = 50.0
-        queue_config.max_capacity = 50.0
-        queue_config.abs_capacity = 50.0
+        queue_config.capacity = capacity[i]
+        queue_config.max_capacity = capacity[i]
+        queue_config.abs_capacity = capacity[i]
         queue_config.name = queue[i] 
         queue_config.state = 'RUNNING'
         confs.append(queue_config)
@@ -28,6 +29,21 @@ def read_scheduler_csv(path):
         queue_config.display()
         """
     return confs
+
+def read_prediction_csv(path):
+    wishes = [] 
+    count = np.random.randint(30,50)
+    queue = ['spark', 'hive', 'ProgrammerAlliance']
+    for i in range(count):
+        wish = QueueWish()
+        wish.name = queue[np.random.randint(0,3)] 
+        wish.vmem = np.random.randint(20,100)
+        wish.vcpu = np.random.randint(20,100)
+        wishes.append(wish)
+        """
+        queue_config.display()
+        """
+    return wishes
 
 
 # TOTOL_MB_INDEX = 15
@@ -41,19 +57,21 @@ def read_cluster_csv(path):
 # RUN_TIME_INDEX = 16
 # MEMORY_SECONDS_INDEX = 22
 def read_app_csv(path):
-    job_count = np.random.randint(10, 20)
-    queue = ['spark', 'hive']
+    job_count = np.random.randint(10, 50)
+    queue = ['spark', 'hive', 'ProgrammerAlliance']
+    # queue = ['spark', 'hive']
     jobs = []
     for i in range(job_count):
         job = Job()
-        job.name = queue[np.random.randint(0,2)] 
+        job.name = queue[np.random.randint(0,3)] 
         job.wait_time = np.random.randint(0, 25)
         job.run_time = np.random.randint(10, 40)
-        job.memory_seconds = 1024*job.run_time
+        job.memory_seconds = 1024*job.run_time*0.05
         jobs.append(job)
         """
         print '%d: queue: %s, wait time: %d, run time: %d, memory seconds: %d' %(i, job.name, job.wait_time, job.run_time, job.memory_seconds)
         """
+    print('%d jobs finished at this interval' % job_count)
     return jobs
 
 if __name__ == '__main__':

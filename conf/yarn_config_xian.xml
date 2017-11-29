@@ -34,7 +34,7 @@
   </property>
   <property>
     <name>yarn.scheduler.capacity.root.queues</name>
-    <value>ProgrammerAlliance,spark,hive</value>
+    <value>ProgrammerAlliance,default,ocsp</value>
   </property>
   <property>
     <name>yarn.scheduler.capacity.rootaaa.spark.queues</name>
@@ -49,75 +49,75 @@
     <value>*</value>
   </property>
   <property>
-    <name>yarn.scheduler.capacity.root.spark.acl_administer_queue</name>
+    <name>yarn.scheduler.capacity.root.default.acl_administer_queue</name>
     <value>*</value>
   </property>
   <property>
-    <name>yarn.scheduler.capacity.root.spark.acl_submit_applications</name>
+    <name>yarn.scheduler.capacity.root.default.acl_submit_applications</name>
     <value>*</value>
   </property>
   <property>
-    <name>yarn.scheduler.capacity.root.spark.minimum-user-limit-percent</name>
+    <name>yarn.scheduler.capacity.root.default.minimum-user-limit-percent</name>
     <value>100</value>
   </property>
   <property>
-    <name>yarn.scheduler.capacity.root.spark.maximum-capacity</name>
+    <name>yarn.scheduler.capacity.root.default.maximum-capacity</name>
     <value>95</value>
   </property>
   <property>
-    <name>yarn.scheduler.capacity.root.spark.user-limit-factor</name>
+    <name>yarn.scheduler.capacity.root.default.user-limit-factor</name>
     <value>10000000</value>
   </property>
   <property>
-    <name>yarn.scheduler.capacity.root.spark.state</name>
+    <name>yarn.scheduler.capacity.root.default.state</name>
     <value>RUNNING</value>
   </property>
   <property>
-    <name>yarn.scheduler.capacity.root.spark.capacity</name>
-    <value>25</value>
+    <name>yarn.scheduler.capacity.root.default.capacity</name>
+    <value>95</value>
   </property>
   <property>
-    <name>yarn.scheduler.capacity.root.spark.ordering-policy</name>
+    <name>yarn.scheduler.capacity.root.default.ordering-policy</name>
     <value>fifo</value>
   </property>
   <property>
-    <name>yarn.scheduler.capacity.root.spark.priority</name>
+    <name>yarn.scheduler.capacity.root.default.priority</name>
     <value>0</value>
   </property>
   <property>
-    <name>yarn.scheduler.capacity.root.spark.accessible-node-labels</name>
+    <name>yarn.scheduler.capacity.root.default.accessible-node-labels</name>
     <value>*</value>
   </property>
   <property>
-    <name>yarn.scheduler.capacity.root.hive.acl_submit_applications</name>
+    <name>yarn.scheduler.capacity.root.ocsp.acl_submit_applications</name>
     <value>*</value>
   </property>
   <property>
-    <name>yarn.scheduler.capacity.root.hive.maximum-capacity</name>
+    <name>yarn.scheduler.capacity.root.ocsp.maximum-capacity</name>
     <value>5</value>
   </property>
   <property>
-    <name>yarn.scheduler.capacity.root.hive.user-limit-factor</name>
+    <name>yarn.scheduler.capacity.root.ocsp.user-limit-factor</name>
     <value>1</value>
   </property>
   <property>
-    <name>yarn.scheduler.capacity.root.hive.state</name>
+    <name>yarn.scheduler.capacity.root.ocsp.state</name>
     <value>RUNNING</value>
   </property>
   <property>
-    <name>yarn.scheduler.capacity.root.hive.capacity</name>
-    <value>35</value>
+    <name>yarn.scheduler.capacity.root.ocsp.capacity</name>
+    <value>4</value>
   </property>
   <property>
-    <name>yarn.scheduler.capacity.root.hive.ordering-policy</name>
+    <name>yarn.scheduler.capacity.root.ocsp.ordering-policy</name>
     <value>fifo</value>
   </property>
   <property>
-    <name>yarn.scheduler.capacity.root.hive.priority</name>
+    <name>yarn.scheduler.capacity.root.ocsp.priority</name>
     <value>0</value>
   </property>
   <property>
-    <name>yarn.scheduler.capacity.root.hive.accessible-node-labels</name>
+    <name>yarn.scheduler.capacity.root.ocsp.accessible-node-labels</name>
     <value>*</value>
   </property>
   <property>
@@ -126,7 +126,7 @@
   </property>
   <property>
     <name>yarn.scheduler.capacity.root.ProgrammerAlliance.maximum-capacity</name>
-    <value>40</value>
+    <value>1</value>
   </property>
   <property>
     <name>yarn.scheduler.capacity.root.ProgrammerAlliance.user-limit-factor</name>
@@ -134,11 +134,11 @@
   </property>
   <property>
     <name>yarn.scheduler.capacity.root.ProgrammerAlliance.state</name>
-    <value>FIXED</value>
+    <value>RUNNING</value>
   </property>
   <property>
     <name>yarn.scheduler.capacity.root.ProgrammerAlliance.capacity</name>
-    <value>40</value>
+    <value>1</value>
   </property>
   <property>
     <name>yarn.scheduler.capacity.root.ProgrammerAlliance.ordering-policy</name>
