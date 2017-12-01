@@ -29,6 +29,7 @@ class QueueConfig(object):
         self.max_capacity = 0
         self.abs_capacity = 0
         self.abs_memory = 0 # absolute memory capacity size in M
+        self.pending = 0 #pending containers/applications in queue
         self.name = ""
         self.state = ""
     

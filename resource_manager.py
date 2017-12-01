@@ -8,14 +8,17 @@ class QueueMetric(object):
     def __init__(self):
         self.job_count = 0
         self.abs_used_memory = 0
-        self.mem_usage = 0
-        self.slowdown = 0
-        self.slowdown_div = 0
-        self.mem_usage_div = 0
+        self.slowdown = 0.0
+        self.slowdown_div = 0.0
+        self.mem_usage = 0.0
+        self.mem_usage_div = 0.0
+        self.pending = 0.0
+        self.pending_div = 0.0
 
 class QueueData(object):
     def __init__(self):
         self.jobs = []
+        self.pendings = []
         self.config = QueueConfig()
         self.cur_metric = QueueMetric()
         self.metrics = []
@@ -24,6 +27,9 @@ class QueueData(object):
   
     def add_job(self, job):
         self.jobs.append(job)
+
+    def add_pending(self, cnt):
+        self.pendings.append(cnt)
 
     def add_totalMb(self, localMb):
         self.totalMbs.append(localMb)
@@ -42,6 +48,9 @@ class QueueData(object):
         
     def clear_jobs(self):
         self.jobs = []
+
+    def clear_pendings(self):
+        self.pendings = []
  
     def cal_leaf_mem_second(self):
         total_memory_second = 0
@@ -49,6 +58,10 @@ class QueueData(object):
             total_memory_second += job.memory_seconds
         return total_memory_second
 
+    def cal_leaf_pending(self):
+        if(len(self.pendings)):
+            self.cur_metric.pending = np.mean(self.pendings)
+ 
     def get_capacity(self):
         return self.config.capacity 
 
@@ -82,8 +95,14 @@ class QueueData(object):
     def get_slowdown(self):
         return self.cur_metric.slowdown
 
+    def get_pending(self):
+        return self.cur_metric.pending
+
     def get_slowdown_div(self):
         return self.cur_metric.slowdown_div
+
+    def get_pending_div(self):
+        return self.cur_metric.pending_div
 
     def get_mem_usage_div(self):
         return self.cur_metric.mem_usage_div
@@ -92,6 +111,7 @@ class QueueData(object):
         self.config.capacity = float(queue_config.capacity)
         self.config.max_capacity = float(queue_config.max_capacity)
         self.config.abs_capacity = float(queue_config.abs_capacity)
+        self.add_pending(queue_config.pending)
         self.config.state = queue_config.state
 
     def update_queue_wish(self, queue_wish):
@@ -135,7 +155,7 @@ class RMQueue(metaclass=Singleton):
     def display(self):
         self.tree.show()
 
-    def display_score(self, queue=None, depth=0):
+    def display_score_old(self, queue=None, depth=0):
         if queue is None:
             queue = self.get_root()
             print('------------' + utils.get_str_time()+' SCORE ----------')
@@ -164,7 +184,31 @@ class RMQueue(metaclass=Singleton):
              children = self.tree.children(queue.tag)
              for child in children:
                  self.display_score(child, depth+2)
-    
+
+    def display_score(self, queue=None, depth=0):
+        if queue is None:
+            queue = self.get_root()
+            print('------------' + utils.get_str_time()+' SCORE ----------')
+            print(24*' ' + '     PENDING                 MEMORY USAGE ')
+            print('QUEUE NAME' + 16*' ' +' AVG        DIV            AVG        DIV')    
+
+        if depth >= 0:
+             print(queue.tag + (22 - len(queue.tag))*' ' + \
+                                '%8.3f' % queue.data.get_pending(),  \
+                                '  %8.3f    ' % queue.data.get_pending_div(), \
+                                '  %8.3f' % queue.data.get_mem_usage(), \
+                                '  %8.3f' % queue.data.get_mem_usage_div())
+        else:  
+             print('-'*depth + queue.tag, '(slowdown: %.3f' % queue.data.get_slowdown(), \
+                              'div: %.3f)' % queue.data.get_slowdown_div(), \
+                              '(mem usage: %.3f' % queue.data.get_mem_usage(), \
+                              'div: %.3f)' % queue.data.get_mem_usage_div())
+         
+        if self.is_leaf(queue.tag) == False:
+             children = self.tree.children(queue.tag)
+             for child in children:
+                 self.display_score(child, depth+2)
+
     def display_prediction(self, queue=None, depth=0):
         if queue is None:
             queue = self.get_root()
@@ -186,7 +230,7 @@ class RMQueue(metaclass=Singleton):
         with open(path, 'a') as f:
             self.write_score_top_down(output=f)
 
-    def write_score_top_down(self, queue=None, depth=0, output=None):
+    def write_score_top_down_old(self, queue=None, depth=0, output=None):
         if queue is None:
             queue = self.get_root()
             output.writelines(('\n---------', utils.get_str_time(), '  SCORE ---------\n'))
@@ -194,22 +238,40 @@ class RMQueue(metaclass=Singleton):
             output.writelines('QUEUE NAME' + 16*' ' +' AVG        DIV            AVG        DIV\n')    
         
         if depth >= 0:
-             output.writelines(queue.tag + (22 - len(queue.tag))*' ' + \
+            output.writelines(queue.tag + (22 - len(queue.tag))*' ' + \
                                 '%8.3f' % queue.data.get_slowdown() +   \
                                 '  %8.3f    ' % queue.data.get_slowdown_div() + \
                                 '  %8.3f' % queue.data.get_mem_usage() + \
                                 '  %8.3f' % queue.data.get_mem_usage_div() + '\n')
-             """
-             output.writelines( (queue.tag, ' (slowdown: %.3f' % queue.data.get_slowdown(), \
+            """
+            output.writelines( (queue.tag, ' (slowdown: %.3f' % queue.data.get_slowdown(), \
                               ' div: %.3f)' % queue.data.get_slowdown_div(), \
                               ' (mem usage: %.3f' % queue.data.get_mem_usage(), \
                               ' div: %.3f)' % queue.data.get_mem_usage_div(), '\n'))
-             """
+            """
         else:  
-             output.writelines(('-'*depth + queue.tag, ' (slowdown: %.3f' % queue.data.get_slowdown(), \
+            output.writelines(('-'*depth + queue.tag, ' (slowdown: %.3f' % queue.data.get_slowdown(), \
                               ' div: %.3f)' % queue.data.get_slowdown_div(), \
                               ' (mem usage: %.3f' % queue.data.get_mem_usage(), \
                               ' div: %.3f)' % queue.data.get_mem_usage_div(), '\n'))
+         
+        if self.is_leaf(queue.tag) == False:
+             children = self.tree.children(queue.tag)
+             for child in children:
+                 self.write_score_top_down(child, depth+2, output)
+
+    def write_score_top_down(self, queue=None, depth=0, output=None):
+        if queue is None:
+            queue = self.get_root()
+            output.writelines(('\n---------', utils.get_str_time(), '  SCORE ---------\n'))
+            output.writelines(24*' ' + '     PENDING                 MEMORY USAGE\n')
+            output.writelines('QUEUE NAME' + 16*' ' +' AVG        DIV            AVG        DIV\n')    
+        
+        output.writelines(queue.tag + (22 - len(queue.tag))*' ' + \
+                            '%8.3f' % queue.data.get_pending() +   \
+                            '  %8.3f    ' % queue.data.get_pending_div() + \
+                            '  %8.3f' % queue.data.get_mem_usage() + \
+                            '  %8.3f' % queue.data.get_mem_usage_div() + '\n')
          
         if self.is_leaf(queue.tag) == False:
              children = self.tree.children(queue.tag)
@@ -321,7 +383,64 @@ class RMQueue(metaclass=Singleton):
             queue.data.cur_metric.slowdown = avg_slowdown
         return queue.data.get_slowdown()
             
-  
+    def cal_pending(self, queue=None):
+        """
+        if current queue is a leaf queue:
+            calculate the average pending count in is pendings.
+        else:
+            calculate the average pending of its chilren;
+            calculate the pending of current queue through the sum all of its chilren's pending.
+        """
+        if queue is None:
+            queue = self.get_root()
+ 
+        if queue.is_leaf():
+            queue.data.cal_leaf_pending()
+        else: # parent queue
+            # First, get its all chilren queue, and call each child's cal_pending function
+            # Second, get the sum of all its children pending 
+            children = self.tree.children(queue.tag)
+            for child in children:
+                self.cal_pending(child)
+                queue.data.cur_metric.pending += child.data.get_pending()
+
+        return queue.data.get_pending()
+
+    def cal_pending_division(self, queue=None):            
+        """
+        if current queue is a leaf queue:
+            stdDivision is zero.
+        else:
+            calculate the standard division of its chilren;
+            calculate the standard division of current queue through its chilren's average pending.
+        """
+        if queue is None:
+            queue = self.get_root()
+
+
+        division = 0.0
+        if self.is_leaf(queue.tag):
+            return division
+        else: # parent queue
+            children = self.tree.children(queue.tag)
+            # First, get its all chilren queue, and call each child's calSlowDown function
+            for child in children:
+                self.cal_pending_division(child)
+
+            # Second, calculate the square sum of division 
+            count = len(children) 
+            avg_pending = queue.data.get_pending() * 1.0 / count
+            squareSum = 0.0
+            for child in children:
+                squareSum += np.square(child.data.get_pending() - avg_pending)
+
+            # Finally, calculate the standard division of the queue
+            # if count == 0:
+            #    queue.data.cur_metric.slowdown_div = division
+            #    return division
+            division = np.sqrt(squareSum / count) 
+            queue.data.cur_metric.pending_div = division
+            return division
 
     def cal_slowdown_division(self, queue=None):            
         """
@@ -481,6 +600,7 @@ class RMQueue(metaclass=Singleton):
         if self.is_leaf(queue.tag):
             return
         else:
+            queue.data.cur_metric.pending = 0.0
             children = self.tree.children(queue.tag)
             for child in children:
                 self.clear_desired_abs_capacity(child)
@@ -560,6 +680,17 @@ class RMQueue(metaclass=Singleton):
            for child in children:
                self.clear_jobs_top_down(child)
 
+    def clear_pendings_top_down(self, queue=None):
+        if queue is None:
+            queue = self.get_root()
+
+        if self.is_leaf(queue.tag):
+            queue.data.clear_pendings()
+        else:
+           children = self.tree.children(queue.tag)
+           for child in children:
+               self.clear_pendings_top_down(child)
+
     def before_scoring(self):
         self.cal_abs_capacity_bottom_up()
         self.cal_capacity_top_down()
@@ -567,11 +698,14 @@ class RMQueue(metaclass=Singleton):
  
     def after_scoreing(self):
         self.clear_jobs_top_down()
+        self.clear_pendings_top_down()
 
     def score(self):
         self.before_scoring()
         self.cal_slowdown()
         self.cal_slowdown_division()
+        self.cal_pending()
+        self.cal_pending_division()
         self.cal_memory_usage()
         self.cal_mem_usage_division()
         self.after_scoreing()

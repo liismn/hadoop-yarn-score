@@ -15,15 +15,17 @@ from utils import Job, QueueConfig, QueueWish
 # QUEUE_STATE_INDEX = 9
 def read_scheduler_csv(path):
     confs = [] 
-    queue = ['spark', 'hive']
-    capacity = [25,35]
-    for i in range(2):
+    queue = ['spark', 'hive', 'ProgrammerAlliance']
+    state = ['RUNNING', 'RUNNING', 'FIXED']
+    capacity = [25,35, 40]
+    for i in range(len(queue)):
         queue_config = QueueConfig()
         queue_config.capacity = capacity[i]
         queue_config.max_capacity = capacity[i]
         queue_config.abs_capacity = capacity[i]
+        queue_config.pending = np.random.randint(0, 5)
         queue_config.name = queue[i] 
-        queue_config.state = 'RUNNING'
+        queue_config.state = state[i]
         confs.append(queue_config)
         """
         queue_config.display()
@@ -71,7 +73,7 @@ def read_app_csv(path):
         """
         print '%d: queue: %s, wait time: %d, run time: %d, memory seconds: %d' %(i, job.name, job.wait_time, job.run_time, job.memory_seconds)
         """
-    print('%d jobs finished at this interval' % job_count)
+    print('%d jobs finished during this interval' % job_count)
     return jobs
 
 if __name__ == '__main__':

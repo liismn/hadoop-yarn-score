@@ -13,20 +13,24 @@ from utils import Job, QueueConfig, QueueWish
 # ABS_CAPACITY = 4
 # QUEUE_NAME_INDEX = 8
 # QUEUE_STATE_INDEX = 9
+# PENDING_CONTAINERS = 15
+# NUM_PENDING_APPLICATIONS = 19
 def read_scheduler_csv(path):
     df = pd.read_csv(path)
-    # cols = df.columns.tolist()
+    cols = df.columns.tolist()
     confs = [] 
     for index, row in df.iterrows():
         queue_config = QueueConfig()
         queue_config.capacity = float(row[1])
         queue_config.max_capacity = float(row[3])
         queue_config.abs_capacity = float(row[4])
+        queue_config.pending = row[15]
+        # print(row[15])
         queue_config.name = row[8]
         queue_config.state = row[9]
         confs.append(queue_config)
         """
-        for i in range(obj.shape[1]):
+        for i in range(df.shape[1]):
             print(i, cols[i], row[i])
         print('-----------------------------------')
         """
@@ -80,12 +84,12 @@ def read_prediction_csv(path):
     return wishes
 
 if __name__ == '__main__':
+    """
     jobs = read_app_csv('./hadoop/app.csv')
     for i in range(len(jobs)):
         job = jobs[i]
         print(i)
         job.display()
-    """
     """
     read_scheduler_csv('./hadoop/scheduler2.csv')
     #print(read_cluster_csv('./hadoop/cluster2.csv'))
