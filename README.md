@@ -31,6 +31,6 @@ A restful server is started which will response following request:
 
 ## Test
 `python score_test.py`
-Where all app/scheduler/queue info are generated randomly.
+Where all app/scheduler/queue info are generated randomly every 5 seconds.
 
 Detailed readme will be updated later.
