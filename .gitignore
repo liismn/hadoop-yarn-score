@@ -22,7 +22,7 @@ sdist/
 var/
 wheels/
 my_test/
-stat.txt
+hadoop/stat.txt
 test.txt
 *.egg-info/
 .installed.cfg
