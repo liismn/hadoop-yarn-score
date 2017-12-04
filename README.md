@@ -24,7 +24,10 @@ A restful server is started which will response following request:
 
 | Request | description | 
 | :----------- | :------: | 
-| /update/all       | Update all information gathered from hadoop system   | 
+| /update/app       | Update jobs information gathered from hadoop system   |
+| /update/cluster   | Update cluster information gathered from hadoop system   |
+| /update/scheduler | Update scheduler information gathered from hadoop system   |
+| /update/all       | Update all(app/cluster/scheduler) information gathered from hadoop system   | 
 | /score       | Scoring hadoop system by updated information    |
 | /predict      | Update prediction from prediction.csv and give the new capacity scheme for next duration |
 
