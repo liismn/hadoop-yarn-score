@@ -54703,3 +54703,78 @@ root                    100.000
 ProgrammerAlliance       40.000
 spark                    23.849
 hive                     36.151
+
+---------2017-12-06:10:22:30  SCORE ---------
+                             PENDING                 MEMORY USAGE
+QUEUE NAME                 AVG        DIV            AVG        DIV
+root                     7.500     0.408         0.363     0.171
+ProgrammerAlliance       3.000     0.000         0.165     0.000
+spark                    2.000     0.000         0.576     0.000
+hive                     2.500     0.000         0.437     0.000
+
+---------2017-12-06:10:22:30  PREDICTION---------
+QUEUE NAME            DESIRED CAPACITY
+root                    100.000
+ProgrammerAlliance       40.000
+spark                    38.388
+hive                     21.612
+
+---------2017-12-06:13:07:02  SCORE ---------
+                             PENDING                 MEMORY USAGE
+QUEUE NAME                 AVG        DIV            AVG        DIV
+root                     7.500     0.707         0.584     0.226
+ProgrammerAlliance       2.000     0.000         0.445     0.000
+spark                    2.000     0.000         0.944     0.000
+hive                     3.500     0.000         0.486     0.000
+
+---------2017-12-06:13:07:02  PREDICTION---------
+QUEUE NAME            DESIRED CAPACITY
+root                    100.000
+ProgrammerAlliance       40.000
+spark                    35.406
+hive                     24.594
+
+---------2017-12-06:13:07:12  SCORE ---------
+                             PENDING                 MEMORY USAGE
+QUEUE NAME                 AVG        DIV            AVG        DIV
+root                     9.000     1.080         0.227     0.029
+ProgrammerAlliance       3.500     0.000         0.213     0.000
+spark                    1.500     0.000         0.196     0.000
+hive                     4.000     0.000         0.265     0.000
+
+---------2017-12-06:13:07:12  PREDICTION---------
+QUEUE NAME            DESIRED CAPACITY
+root                    100.000
+ProgrammerAlliance       40.000
+spark                    42.989
+hive                     17.011
+
+---------2017-12-07:09:34:41  SCORE ---------
+                             PENDING                 MEMORY USAGE
+QUEUE NAME                 AVG        DIV            AVG        DIV
+root                     7.500     0.408         0.275     0.087
+ProgrammerAlliance       2.000     0.000         0.171     0.000
+spark                    2.500     0.000         0.379     0.000
+hive                     3.000     0.000         0.320     0.000
+
+---------2017-12-07:09:34:41  PREDICTION---------
+QUEUE NAME            DESIRED CAPACITY
+root                    100.000
+ProgrammerAlliance       40.000
+spark                    34.692
+hive                     25.308
+
+---------2017-12-07:09:38:12  SCORE ---------
+                             PENDING                 MEMORY USAGE
+QUEUE NAME                 AVG        DIV            AVG        DIV
+root                     5.500     0.943         0.376     0.049
+ProgrammerAlliance       2.500     0.000         0.327     0.000
+spark                    0.500     0.000         0.446     0.000
+hive                     2.500     0.000         0.382     0.000
+
+---------2017-12-07:09:38:12  PREDICTION---------
+QUEUE NAME            DESIRED CAPACITY
+root                    100.000
+ProgrammerAlliance       40.000
+spark                    32.848
+hive                     27.152

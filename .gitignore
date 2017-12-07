@@ -27,6 +27,7 @@ test.txt
 *.egg-info/
 .installed.cfg
 *.egg
+simulation.py
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
