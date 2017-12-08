@@ -702,8 +702,8 @@ class RMQueue(metaclass=Singleton):
 
     def score(self):
         self.before_scoring()
-        self.cal_slowdown()
-        self.cal_slowdown_division()
+        # self.cal_slowdown()
+        # self.cal_slowdown_division()
         self.cal_pending()
         self.cal_pending_division()
         self.cal_memory_usage()

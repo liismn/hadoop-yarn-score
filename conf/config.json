@@ -3,7 +3,7 @@
     "stat_interval": 10,
     "scheduler_metric_path": "./hadoop/scheduler2.csv",
     "job_metric_path": "./hadoop/app.csv",
-    "yarn_config_file": "./conf/yarn_config.xml",
+    "yarn_config_file": "./my_test/yarn_config.xml",
     "cluster_metric_path":"./hadoop/cluster2.csv",
     "prediction_path": "./hadoop/prediction.csv",
     "stat_output_file" : "./hadoop/stat.txt",

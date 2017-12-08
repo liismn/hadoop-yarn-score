@@ -80,7 +80,7 @@ def update_predict_info(rmq, cfg):
     for wish in queue_wishes:
         queue = rmq.get_queue(wish.name)
         if queue is None:
-            print("Unkonw queue name", job.name)
+            print("Unkonw queue name", wish.name)
             continue 
         queue.data.update_queue_wish(wish)
         
@@ -130,6 +130,7 @@ def main(config_path):
     cfg = conf.Config(config_path)
     print(cfg.config_file_path)
     cfg.update_config()
+    print(cfg.yarn_config_path)
     test_cfg = conf.Config()
     # cfg.init_all_timestamp()
     start(cfg)

@@ -12,6 +12,7 @@ class Config(metaclass=Singleton):
         self.scheduler_metric_path = '../hadoop_util/output/scheduler2.csv' # to be fixed
         self.job_metric_path = '../hadoop_util/output/app.csv' # to be fixed
         self.cluster_metric_path = '../hadoop_util/output/cluster2.csv'
+        # self.yarn_config_path = './my_test/yarn_config.xml'
         self.yarn_config_path = './conf/yarn_config.xml'
         self.prediction_path = './hadoop/prediction.csv'
         self.stat_output_file = './hadoop/stat.txt'
@@ -77,6 +78,12 @@ class Config(metaclass=Singleton):
     def set_rest_port(self, port):
         self.rest_port = port
 
+    def get_yarn_config_path(self):
+        return self.yarn_config_path
+
+    def set_yarn_config_path(self, path):
+        self.yarn_config_path = path
+
     """
     def get_update_interval(self):
         return self.update_interval
@@ -139,6 +146,7 @@ class Config(metaclass=Singleton):
         self.set_cluster_metric_path(data['cluster_metric_path'])
         self.set_stat_output_file(data['stat_output_file'])
         self.set_sys_total_memory(data['sys_total_memory'])
+        self.set_yarn_config_path(data['yarn_config_file'])
         self.set_rest_port(data['rest_port'])
 
     def display(self):
@@ -151,6 +159,7 @@ class Config(metaclass=Singleton):
         print('stat_interval: \t%ld' % self.stat_interval)
         print('stat_output_file \t%s' % self.stat_output_file)
         print('sys_total_memory \t%ld' % self.total_sys_memory)
+        print('yarn_config_path \t%s' % self.yarn_config_path)
         print('rest_port \t%d' % self.rest_port)
         print('--------------------------------')
 
