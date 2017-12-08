@@ -1,3 +1,4 @@
+from __future__ import print_function
 import numpy as np
 import xml.etree.ElementTree as ET
 from utils import Job, QueueConfig, QueueWish, Singleton
@@ -135,7 +136,8 @@ class QueueData(object):
     def get_job_count(self):
         return self.cur_metric.job_count
 
-class RMQueue(metaclass=Singleton):
+class RMQueue(object):
+    __mataclass__ = Singleton
     MAX_METRIC_COUNT = 12 
     CAL_INTERVAL_IN_SECOND = 2 * 60 * 60 # 2hours
     def __init__(self):

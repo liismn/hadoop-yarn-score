@@ -5,7 +5,8 @@ import os
 import time
 from utils import Singleton
 
-class Config(metaclass=Singleton):
+class Config(object):
+    __mataclass__ = Singleton
     def __init__(self, path=None):
         cur_time = time.time()
         self.config_file_path = path # fixed

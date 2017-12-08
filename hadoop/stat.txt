@@ -59477,3 +59477,94 @@ QUEUE NAME            DESIRED CAPACITY
 root                    100.000
 spark                    62.758
 hive                     37.242
+
+---------2017-12-08:09:58:53  SCORE ---------
+                             PENDING                 MEMORY USAGE
+QUEUE NAME                 AVG        DIV            AVG        DIV
+root                     5.500     1.250         0.187     0.008
+spark                    1.500     0.000         0.178     0.000
+hive                     4.000     0.000         0.194     0.000
+
+---------2017-12-08:09:58:53  PREDICTION---------
+QUEUE NAME            DESIRED CAPACITY
+root                    100.000
+spark                    60.790
+hive                     39.210
+
+---------2017-12-08:09:59:03  SCORE ---------
+                             PENDING                 MEMORY USAGE
+QUEUE NAME                 AVG        DIV            AVG        DIV
+root                     6.000     1.000         0.352     0.070
+spark                    2.000     0.000         0.433     0.000
+hive                     4.000     0.000         0.294     0.000
+
+---------2017-12-08:09:59:03  PREDICTION---------
+QUEUE NAME            DESIRED CAPACITY
+root                    100.000
+spark                    40.264
+hive                     59.736
+
+---------2017-12-08:10:30:28  SCORE ---------
+                             PENDING                 MEMORY USAGE
+QUEUE NAME                 AVG        DIV            AVG        DIV
+root                     6.000     1.000         0.537     0.049
+spark                    4.000     0.000         0.594     0.000
+hive                     2.000     0.000         0.496     0.000
+
+---------2017-12-08:10:30:28  PREDICTION---------
+QUEUE NAME            DESIRED CAPACITY
+root                    100.000
+spark                    38.919
+hive                     61.081
+
+---------2017-12-08:10:30:38  SCORE ---------
+                             PENDING                 MEMORY USAGE
+QUEUE NAME                 AVG        DIV            AVG        DIV
+root                     2.000     0.500         0.294     0.093
+spark                    0.500     0.000         0.403     0.000
+hive                     1.500     0.000         0.216     0.000
+
+---------2017-12-08:10:30:38  PREDICTION---------
+QUEUE NAME            DESIRED CAPACITY
+root                    100.000
+spark                    35.692
+hive                     64.308
+
+---------2017-12-08:10:31:23  SCORE ---------
+                             PENDING                 MEMORY USAGE
+QUEUE NAME                 AVG        DIV            AVG        DIV
+root                     4.000     0.500         0.438     0.200
+spark                    1.500     0.000         0.672     0.000
+hive                     2.500     0.000         0.271     0.000
+
+---------2017-12-08:10:31:23  PREDICTION---------
+QUEUE NAME            DESIRED CAPACITY
+root                    100.000
+spark                    52.611
+hive                     47.389
+
+---------2017-12-08:10:31:33  SCORE ---------
+                             PENDING                 MEMORY USAGE
+QUEUE NAME                 AVG        DIV            AVG        DIV
+root                     3.000     1.500         0.401     0.082
+spark                    0.000     0.000         0.496     0.000
+hive                     3.000     0.000         0.333     0.000
+
+---------2017-12-08:10:31:33  PREDICTION---------
+QUEUE NAME            DESIRED CAPACITY
+root                    100.000
+spark                    40.133
+hive                     59.867
+
+---------2017-12-08:10:31:43  SCORE ---------
+                             PENDING                 MEMORY USAGE
+QUEUE NAME                 AVG        DIV            AVG        DIV
+root                     2.500     0.750         0.378     0.121
+spark                    0.500     0.000         0.520     0.000
+hive                     2.000     0.000         0.277     0.000
+
+---------2017-12-08:10:31:43  PREDICTION---------
+QUEUE NAME            DESIRED CAPACITY
+root                    100.000
+spark                    41.841
+hive                     58.159
