@@ -10,7 +10,7 @@ The config file in `./conf/config.json` should be edited before first start.
 |stat_interval      |Interval between two score period in second, which is used in calculating memeory usage, 2 hours = 7200 |   
 |scheduler_metric_path |The path of scheduler infos gathered from hadoop cluster, default value is "./hadoop/scheduler2.csv". |
 |job_metric_path |The path of app infos gathered from hadoop cluser, default value is "./hadoop/app.csv" |
-|yarn_config_file    |The path of XML file exported yarn scheduler. For test, use "./conf/yarn_config.xml". For product, use "./conf_config_xian.xml" . |
+|yarn_config_file    |The path of XML file exported yarn scheduler. For test, use "./conf/yarn_config.xml". For product, use "./conf/yarn_config_xian.xml" . |
 |cluster_metric_path |Path of cluster infos gathered from hadoop, used for calclulating the abs_memory of eahc queue. Default value is "./hadoop/cluster2.csv" |
 |prediction_path|Path of LSTM prediction result for each queue, default value is "./hadoop/prediction.csv" |
 |stat_output_file |Path of output file, the result of scoring and prediction |
