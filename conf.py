@@ -67,10 +67,10 @@ class Config(metaclass=Singleton):
         self.stat_interval = interval
 
     def get_sys_total_memory(self):
-        return self.sys_total_memory
+        return self.total_sys_memory
 
     def set_sys_total_memory(self, size):
-        self.sys_total_memory = size
+        self.total_sys_memory = size
 
     def get_rest_port(self):
         return self.rest_port
