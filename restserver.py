@@ -56,6 +56,7 @@ def ping():
     return('ok')
 
 def start_server(port=5000):
+    global rmq, cfg
     rmq.display()
     cfg.display()
     # app.run()

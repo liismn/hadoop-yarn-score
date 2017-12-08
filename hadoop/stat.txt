@@ -59568,3 +59568,18 @@ QUEUE NAME            DESIRED CAPACITY
 root                    100.000
 spark                    41.841
 hive                     58.159
+
+---------2017-12-08:11:23:38  SCORE ---------
+                             PENDING                 MEMORY USAGE
+QUEUE NAME                 AVG        DIV            AVG        DIV
+root                    35.000    14.430       557.475   487.650
+ProgrammerAlliance       0.000     0.000         0.000     0.000
+spark                   32.000     0.000       247.513     0.000
+hive                     3.000     0.000      1135.767     0.000
+
+---------2017-12-08:11:23:45  PREDICTION---------
+QUEUE NAME            DESIRED CAPACITY
+root                    100.000
+ProgrammerAlliance       28.571
+spark                    21.645
+hive                     49.784

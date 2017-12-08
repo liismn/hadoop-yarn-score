@@ -137,7 +137,7 @@ class QueueData(object):
         return self.cur_metric.job_count
 
 class RMQueue(object):
-    __mataclass__ = Singleton
+    __metaclass__ = Singleton
     MAX_METRIC_COUNT = 12 
     CAL_INTERVAL_IN_SECOND = 2 * 60 * 60 # 2hours
     def __init__(self):

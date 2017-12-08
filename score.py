@@ -1,3 +1,4 @@
+from __future__ import print_function
 import os, time
 import argparse
 import resource_manager 
@@ -64,6 +65,7 @@ def update_prediction_info(rmq, cfg):
 # parse csv file which includes the total memory of root queue 
 def update_cluster_info(rmq, cfg):
     cluster_file = cfg.get_cluster_metric_path()
+    print(cluster_file)
     ts = get_mtime(cluster_file)
     totalMb = datainput.read_cluster_csv(cluster_file) 
     if totalMb == 0:
@@ -130,6 +132,7 @@ def main(config_path):
     cfg = conf.Config(config_path)
     print(cfg.config_file_path)
     cfg.update_config()
+    print(cfg.get_cluster_metric_path())
     test_cfg = conf.Config()
     # cfg.init_all_timestamp()
     start(cfg)
