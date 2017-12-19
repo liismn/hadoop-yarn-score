@@ -82,7 +82,7 @@ def update_predict_info(rmq, cfg):
     for wish in queue_wishes:
         queue = rmq.get_queue(wish.name)
         if queue is None:
-            print("Unkonw queue name", job.name)
+            print("Unkonw queue name", wish.name)
             continue 
         queue.data.update_queue_wish(wish)
         

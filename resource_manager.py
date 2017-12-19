@@ -638,7 +638,9 @@ class RMQueue(object):
             abs_capacity = queue.data.wish.abs_capacity
             remain_capaciy = 100.0
             for child in children:
-                if abs_capacity == 0:
+                if child.data.config.state == "FIXED":
+                    child.data.wish.capacity = child.data.config.capacity
+                elif abs_capacity == 0:
                     child.data.wish.capacity = 0
                 else:
                     child.data.wish.capacity = child.data.wish.abs_capacity / abs_capacity * 100.0
