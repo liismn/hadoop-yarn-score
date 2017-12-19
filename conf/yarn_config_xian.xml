@@ -134,7 +134,7 @@
   </property>
   <property>
     <name>yarn.scheduler.capacity.root.ProgrammerAlliance.state</name>
-    <value>RUNNING</value>
+    <value>FIXED</value>
   </property>
   <property>
     <name>yarn.scheduler.capacity.root.ProgrammerAlliance.capacity</name>
