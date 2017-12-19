@@ -638,7 +638,10 @@ class RMQueue(object):
             abs_capacity = queue.data.wish.abs_capacity
             remain_capaciy = 100.0
             for child in children:
-                child.data.wish.capacity = child.data.wish.abs_capacity / abs_capacity * 100.0
+                if abs_capacity == 0:
+                    child.data.wish.capacity = 0
+                else:
+                    child.data.wish.capacity = child.data.wish.abs_capacity / abs_capacity * 100.0
                 self.cal_desired_capacity_top_down(child)
 
     def cal_capacity_top_down(self, queue=None):
