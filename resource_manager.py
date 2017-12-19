@@ -638,7 +638,7 @@ class RMQueue(metaclass=Singleton):
             for child in children:
                 if abs_capacity == 0:
                     child.data.wish.capacity = 0
-                else 
+                else:
                     child.data.wish.capacity = child.data.wish.abs_capacity / abs_capacity * 100.0
                 self.cal_desired_capacity_top_down(child)
 
