@@ -74818,3 +74818,26 @@ root                     0.000     0.000         0.000     0.000
 ProgrammerAlliance       0.000     0.000         0.000     0.000
 default                  0.000     0.000         0.000     0.000
 ocsp                     0.000     0.000         0.000     0.000
+
+---------2017-12-22:16:14:10  PREDICTION---------
+QUEUE NAME            DESIRED CAPACITY
+root                    100.000
+ProgrammerAlliance        1.000
+default                  49.500
+ocsp                     49.500
+
+---------2017-12-22:16:14:16  SCORE ---------
+                             PENDING                 MEMORY USAGE
+QUEUE NAME                 AVG        DIV            AVG        DIV
+root                     0.000     0.000         0.000     0.000
+ProgrammerAlliance       0.000     0.000         0.000     0.000
+default                  0.000     0.000         0.000     0.000
+ocsp                     0.000     0.000         0.000     0.000
+
+---------2017-12-22:16:15:31  SCORE ---------
+                             PENDING                 MEMORY USAGE
+QUEUE NAME                 AVG        DIV            AVG        DIV
+root                     0.000     0.000         0.004     0.002
+ProgrammerAlliance       0.000     0.000         0.000     0.000
+default                  0.000     0.000         0.004     0.000
+ocsp                     0.000     0.000         0.000     0.000
