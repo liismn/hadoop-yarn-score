@@ -563,6 +563,7 @@ class RMQueue(metaclass=Singleton):
            children = self.tree.children(queue.tag) 
            abs_capacity = 0
            for child in children:
+               print("Queue name: %s, abs_capacity: %.2f" %(child.tag, child.data.get_abs_capacity()))
                self.cal_abs_capacity_bottom_up(child)
                abs_capacity += child.data.get_abs_capacity()
            queue.data.set_abs_capacity(abs_capacity)

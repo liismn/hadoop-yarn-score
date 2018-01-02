@@ -11,6 +11,8 @@ class Config(metaclass=Singleton):
         self.config_file_path = path # fixed
         self.scheduler_metric_path = '../hadoop_util/output/scheduler2.csv' # to be fixed
         self.job_metric_path = '../hadoop_util/output/app.csv' # to be fixed
+        self.job_stopped_path = '../hadoop_util/output/app_stopped.csv' # to be fixed
+        self.job_started_path = '../hadoop_util/output/app_started.csv' # to be fixed
         self.cluster_metric_path = '../hadoop_util/output/cluster2.csv'
         # self.yarn_config_path = './my_test/yarn_config.xml'
         self.yarn_config_path = './conf/yarn_config.xml'
@@ -53,6 +55,18 @@ class Config(metaclass=Singleton):
 
     def set_scheduler_metric_path(self, path):
         self.scheduler_metric_path = path
+
+    def get_job_stopped_path(self):
+        return self.job_stopped_path
+
+    def set_job_stopped_path(self, path):
+        self.job_stopped_path = path
+
+    def get_job_started_path(self):
+        return self.job_started_path
+
+    def set_job_started_path(self, path):
+        self.job_started_path = path
 
     def get_job_metric_path(self):
         return self.job_metric_path
@@ -139,6 +153,8 @@ class Config(metaclass=Singleton):
             data = json.load(f)
 
         self.set_job_metric_path(data['job_metric_path'])
+        self.set_job_stopped_path(data['job_stopped_path'])
+        self.set_job_started_path(data['job_started_path'])
         self.set_scheduler_metric_path(data['scheduler_metric_path'])
         self.set_stat_interval(data['stat_interval'])
         self.set_prediction_path(data['prediction_path'])
@@ -152,6 +168,8 @@ class Config(metaclass=Singleton):
     def display(self):
         print('--------------------------------')
         print('job_metric_path: \t%s' % self.job_metric_path)
+        print('job_stopped_path: \t%s' % self.job_stopped_path)
+        print('job_started_path: \t%s' % self.job_started_path)
         print('scheduler_metric_path: \t%s' % self.scheduler_metric_path)
         print('cluster_metric_path: \t%s' % self.cluster_metric_path)
         print('prediction_path \t%s' % self.prediction_path)

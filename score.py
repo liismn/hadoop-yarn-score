@@ -34,6 +34,37 @@ def update_scheduler_info(rmq, cfg):
     #   cfg.update_scheduler_timestamp(ts)
 
 
+# parse csv file which includes stopped app info gathered from yarn scheduler
+def update_app_stopped_info(rmq, cfg):
+    app_file = cfg.get_job_stopped_path()
+    # ts = get_mtime(app_file)
+    # if True or ts > cfg.get_job_timestamp():
+    # if ts > cfg.get_job_timestamp():
+    jobs = datainput.read_app_stopped_csv(app_file) 
+    # if ts > cfg.get_app_timestamp():
+    for job in jobs:
+        queue = rmq.get_queue(job.name)
+        if queue is None:
+            print("Unkonw queue name", job.name)
+            continue 
+        queue.data.add_job(job)
+    
+# parse csv file which includes new started app info gathered from yarn scheduler
+def update_app_started_info(rmq, cfg):
+    app_file = cfg.get_job_started_path()
+    # ts = get_mtime(app_file)
+    # if True or ts > cfg.get_job_timestamp():
+    # if ts > cfg.get_job_timestamp():
+    jobs = datainput.read_app_started_csv(app_file) 
+    # if ts > cfg.get_app_timestamp():
+    for job in jobs:
+        queue = rmq.get_queue(job.name)
+        if queue is None:
+            print("Unkonw queue name", job.name)
+            continue 
+        queue.data.add_job(job)
+    #   cfg.update_job_timestamp(ts)
+
 # parse csv file which includes app info gathered from yarn scheduler
 def update_app_info(rmq, cfg):
     app_file = cfg.get_job_metric_path()
@@ -86,10 +117,12 @@ def update_predict_info(rmq, cfg):
         
 
 
-def update_info(rmq, cfg):
+def update_all_info(rmq, cfg):
     update_scheduler_info(rmq, cfg)
     update_cluster_info(rmq, cfg)
     update_app_info(rmq, cfg)
+    update_app_stopped_info(rmq, cfg)
+    update_app_started_info(rmq, cfg)
 
 def score(rmq, cfg):
     rmq.score()

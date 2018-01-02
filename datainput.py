@@ -45,24 +45,69 @@ def read_cluster_csv(path):
     total_mb = obj.iloc[0][15] # csv should contain only one data line 
     return total_mb
 
-# QUEUE_INDEX = 3
-# START_TIME_INDEX = 14
-# FINISHED_TIME_INDEX = 15
-# RUN_TIME_INDEX = 16
-# MEMORY_SECONDS_INDEX = 22
+# QUEUE_INDEX = 23
+# ELAPSED_TIME_INDEX = 10
+# MEMORY_SECONDS_INDEX = 15 
+# MEMORY_ALLOCATE = 0
 def read_app_csv(path):
     df = pd.read_csv(path)
     # cols = df.columns.tolist()
     jobs = []
     for index, row in df.iterrows():
         job = Job()
-        job.name = row[3]
-        job.wait_time = np.random.randint(50) #暂时用随机数模拟
-        job.run_time = row[16] * 0.001 
-        job.memory_seconds = row[22]
+        job.name = row[23]
+        job.run_time = row[10] * 0.001
+        job.memory_seconds = row[0]*300
         jobs.append(job)
         """
-        for i in range(obj.shape[1]):
+        for i in range(df.shape[1]):
+            print(i, cols[i], row[i])
+        print( '-----------------------------------')
+        """
+    return jobs
+
+# QUEUE_INDEX = 3
+# START_TIME_INDEX = 14
+# FINISHED_TIME_INDEX = 15
+# ELAPSED_TIME_INDEX = 16
+# MEMORY_SECONDS_INDEX = 22
+def read_app_stopped_csv(path):
+    df = pd.read_csv(path)
+    # cols = df.columns.tolist()
+    jobs = []
+    for index, row in df.iterrows():
+        job = Job()
+        job.name = row[3]
+        # job.wait_time = np.random.randint(50) #暂时用随机数模拟
+        job.run_time = row[16] * 0.001
+        job.memory_seconds = row[22]
+        if job.run_time > 150:
+            job.memory_seconds = job.memory_seconds * 150 / job.run_time
+            print("STOPPED: ", job.memory_seconds)
+        jobs.append(job)
+        """
+        for i in range(df.shape[1]):
+            print(i, cols[i], row[i])
+        print( '-----------------------------------')
+        """
+    return jobs
+
+# QUEUE_INDEX = 23
+# ELAPSED_TIME_INDEX = 10
+# MEMORY_SECONDS_INDEX = 15 
+def read_app_started_csv(path):
+    # print("PATH:", path)
+    df = pd.read_csv(path)
+    #cols = df.columns.tolist()
+    jobs = []
+    for index, row in df.iterrows():
+        job = Job()
+        job.name = row[23]
+        job.run_time = row[10] * 0.001
+        job.memory_seconds = row[15]
+        jobs.append(job)
+        """
+        for i in range(df.shape[1]):
             print(i, cols[i], row[i])
         print( '-----------------------------------')
         """
@@ -84,12 +129,12 @@ def read_prediction_csv(path):
     return wishes
 
 if __name__ == '__main__':
+    jobs = read_app_started_csv('../hadooputil/output/runningapp1.csv')
     """
-    jobs = read_app_csv('./hadoop/app.csv')
     for i in range(len(jobs)):
         job = jobs[i]
         print(i)
         job.display()
-    """
     read_scheduler_csv('./hadoop/scheduler2.csv')
     #print(read_cluster_csv('./hadoop/cluster2.csv'))
+    """

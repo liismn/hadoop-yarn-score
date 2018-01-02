@@ -31,9 +31,7 @@ def update_scheduler():
 
 @app.route('/update/all')
 def update_all():
-    score.update_cluster_info(rmq, cfg)
-    score.update_scheduler_info(rmq, cfg)
-    score.update_app_info(rmq, cfg)
+    score.update_all_info(rmq, cfg)
     return 'You are updating job, cluster and scheduler info'
 
 @app.route('/config', methods=['POST'])
