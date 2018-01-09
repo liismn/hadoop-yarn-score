@@ -21,8 +21,6 @@ def get_mtime(filename):
 def update_scheduler_info(rmq, cfg):
     scheduler_file = cfg.get_scheduler_metric_path()
     ts = get_mtime(scheduler_file)
-    # if True or ts > cfg.get_scheduler_timestamp():
-    # if ts > cfg.get_scheduler_timestamp():
     queue_configs = datainput.read_scheduler_csv(scheduler_file) 
     for qc in queue_configs:
         queue = rmq.get_queue(qc.name)
@@ -31,55 +29,40 @@ def update_scheduler_info(rmq, cfg):
             continue 
         queue.data.update_queue_config(qc)
         #print(qc.name)
-    #   cfg.update_scheduler_timestamp(ts)
 
 
 # parse csv file which includes stopped app info gathered from yarn scheduler
 def update_app_stopped_info(rmq, cfg):
     app_file = cfg.get_job_stopped_path()
-    # ts = get_mtime(app_file)
-    # if True or ts > cfg.get_job_timestamp():
-    # if ts > cfg.get_job_timestamp():
     jobs = datainput.read_app_stopped_csv(app_file) 
-    # if ts > cfg.get_app_timestamp():
     for job in jobs:
         queue = rmq.get_queue(job.name)
         if queue is None:
-            print("Unkonw queue name", job.name)
+            print("Unknown queue name", job.name)
             continue 
         queue.data.add_job(job)
     
 # parse csv file which includes new started app info gathered from yarn scheduler
 def update_app_started_info(rmq, cfg):
     app_file = cfg.get_job_started_path()
-    # ts = get_mtime(app_file)
-    # if True or ts > cfg.get_job_timestamp():
-    # if ts > cfg.get_job_timestamp():
     jobs = datainput.read_app_started_csv(app_file) 
-    # if ts > cfg.get_app_timestamp():
     for job in jobs:
         queue = rmq.get_queue(job.name)
         if queue is None:
-            print("Unkonw queue name", job.name)
+            print("Unknown queue name", job.name)
             continue 
         queue.data.add_job(job)
-    #   cfg.update_job_timestamp(ts)
 
 # parse csv file which includes app info gathered from yarn scheduler
 def update_app_info(rmq, cfg):
     app_file = cfg.get_job_metric_path()
-    # ts = get_mtime(app_file)
-    # if True or ts > cfg.get_job_timestamp():
-    # if ts > cfg.get_job_timestamp():
     jobs = datainput.read_app_csv(app_file) 
-    # if ts > cfg.get_app_timestamp():
     for job in jobs:
         queue = rmq.get_queue(job.name)
         if queue is None:
-            print("Unkonw queue name", job.name)
+            print("Unknown queue name", job.name)
             continue 
         queue.data.add_job(job)
-    #   cfg.update_job_timestamp(ts)
 
 # parse csv file which includes prediction info 
 def update_prediction_info(rmq, cfg):
@@ -88,7 +71,7 @@ def update_prediction_info(rmq, cfg):
     for wish in wishes:
         queue = rmq.get_queue(wish.name)
         if queue is None:
-            print("Unknow queue name", wish.name)
+            print("Unknown queue name", wish.name)
             continue
         queue.data.update_wish(wish)
 
@@ -101,8 +84,6 @@ def update_cluster_info(rmq, cfg):
         return
     queue = rmq.get_queue('root')
     queue.data.add_totalMb(totalMb)
-    # cfg.update_cluster_timestamp(ts)
-    # queue.data.cal_totalMb_mean()
 
 # parse csv file which includes the prediction of each leaf queue
 def update_predict_info(rmq, cfg):
@@ -111,7 +92,7 @@ def update_predict_info(rmq, cfg):
     for wish in queue_wishes:
         queue = rmq.get_queue(wish.name)
         if queue is None:
-            print("Unkonw queue name", wish.name)
+            print("Unknown queue name", wish.name)
             continue 
         queue.data.update_queue_wish(wish)
         

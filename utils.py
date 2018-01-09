@@ -32,6 +32,7 @@ class QueueConfig(object):
         self.pending = 0 #pending containers/applications in queue
         self.name = ""
         self.state = ""
+        self.fixed = False
     
     def display(self):
         print('queue name: %s, state: %s' %(self.name, self.state))

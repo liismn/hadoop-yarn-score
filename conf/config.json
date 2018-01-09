@@ -5,7 +5,7 @@
     "job_metric_path": "../hadooputil/output/runningapp1.csv",
     "job_stopped_path": "../hadooputil/output/app.csv",
     "job_started_path": "../hadooputil/output/runningapp2.csv",
-    "yarn_config_file": "./conf/yarn_config.xml",
+    "yarn_config_file": "./conf/yarn_config_xian.xml",
     "cluster_metric_path":"../hadooputil/output/cluster2.csv",
     "prediction_path": "../hadooputil/model_out/prediction.csv",
     "stat_output_file" : "../hadooputil/output/stat.txt",

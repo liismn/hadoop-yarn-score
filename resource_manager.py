@@ -65,6 +65,9 @@ class QueueData(object):
     def get_capacity(self):
         return self.config.capacity 
 
+    def set_fixed(self, fixed):
+        self.config.fixed = fixed
+
     def set_capacity(self, capacity):
         self.config.capacity = float(capacity)
 
@@ -113,6 +116,7 @@ class QueueData(object):
         self.config.abs_capacity = float(queue_config.abs_capacity)
         self.add_pending(queue_config.pending)
         self.config.state = queue_config.state
+
 
     def update_queue_wish(self, queue_wish):
         self.wish.vmem += float(queue_wish.vmem)
@@ -563,7 +567,7 @@ class RMQueue(metaclass=Singleton):
            children = self.tree.children(queue.tag) 
            abs_capacity = 0
            for child in children:
-               print("Queue name: %s, abs_capacity: %.2f" %(child.tag, child.data.get_abs_capacity()))
+               # print("Queue name: %s, abs_capacity: %.2f" %(child.tag, child.data.get_abs_capacity()))
                self.cal_abs_capacity_bottom_up(child)
                abs_capacity += child.data.get_abs_capacity()
            queue.data.set_abs_capacity(abs_capacity)
@@ -580,7 +584,7 @@ class RMQueue(metaclass=Singleton):
            fixed_capacity = 0.0
            for child in children:
                self.cal_desired_abs_capacity_bottom_up(child)
-               if child.data.config.state == "FIXED": 
+               if child.data.config.fixed: 
                    # print("FIXED")
                    # print(child.data.config.capacity)
                    # print(child.data.config.abs_capacity)
@@ -589,7 +593,7 @@ class RMQueue(metaclass=Singleton):
                    abs_capacity += child.data.wish.abs_capacity
            
            for child in children:
-               if child.data.config.state == "FIXED":
+               if child.data.config.fixed:
                    child.data.wish.abs_capacity = abs_capacity/(100.0 - fixed_capacity) * child.data.config.capacity
            queue.data.wish.abs_capacity = abs_capacity * 100.0 / (100.0 - fixed_capacity)
 
@@ -637,7 +641,7 @@ class RMQueue(metaclass=Singleton):
             abs_capacity = queue.data.wish.abs_capacity
             remain_capaciy = 100.0
             for child in children:
-                if child.data.config.state == "FIXED":
+                if child.data.config.fixed:
                     child.data.wish.capacity = child.data.config.capacity
                 elif abs_capacity == 0:
                     child.data.wish.capacity = 0
@@ -820,7 +824,9 @@ def parseYarnConfig(conf):
             queue = rmq.get_queue(qName)
             if queue is None:
                 queue = rmq.create_queue(name = qName)
-            
+            if qName == "ProgrammerAlliance":
+                queue.data.set_fixed(True)
+
             queue.data.set_state(value.text) 
            
     rmq.cal_abs_capacity_top_down()
