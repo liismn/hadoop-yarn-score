@@ -34,7 +34,6 @@ def read_cluster_csv(path):
     # print(cols)
     total_mb = 0
     total_mb = obj.iloc[0]['totalMB'] # the csv file should contain only one data line 
-    print(total_mb)
     return total_mb
 
 def read_app_csv(path):
@@ -99,13 +98,11 @@ def read_app_started_csv(path):
 def read_prediction_csv(path):
     df = pd.read_csv(path)
     cols = df.columns.tolist()
-    print(cols)
     wishes = []
     for index, row in df.iterrows():
         wish = QueueWish() 
         wish.vmem = row[1]
-        wish.vcpu = row[2]
-        wish.name = row[3]
+        wish.name = row[2]
         wishes.append(wish)
     return wishes
 
