@@ -1,6 +1,6 @@
 import numpy as np
 import xml.etree.ElementTree as ET
-from utils import Job, QueueConfig, QueueWish, Singleton
+from utils import Job, QueueConfig, QueueWish, QueueMemoryUsage, Singleton
 from treelib import Node, Tree
 import utils
 
@@ -11,6 +11,7 @@ class QueueMetric(object):
         self.slowdown = 0.0
         self.slowdown_div = 0.0
         self.mem_usage = 0.0
+        self.abs_mem_usage = 0.0
         self.mem_usage_div = 0.0
         self.pending = 0.0
         self.pending_div = 0.0
@@ -20,6 +21,7 @@ class QueueData(object):
         self.jobs = []
         self.pendings = []
         self.config = QueueConfig()
+        self.mus = []
         self.cur_metric = QueueMetric()
         self.metrics = []
         self.totalMbs = []
@@ -42,6 +44,15 @@ class QueueData(object):
         if l > 0:
             self.config.abs_memory = np.mean(self.totalMbs)
             # print(self.config.abs_memory)
+
+    def cal_queue_memory_usage(self):
+        l = len(self.mus)
+        if l > 0:
+            return np.mean(self.mus)
+        return 0   
+
+    def clear_queue_memory_usage(self):
+        self.mus = []
         
     def add_metric(self, metric):
         self.metrics.append(metric) 
@@ -80,6 +91,12 @@ class QueueData(object):
     def get_abs_capacity(self):
         return self.config.abs_capacity
 
+    def get_abs_memory_usage(self):
+        return self.cur_metric.abs_mem_usage
+
+    def set_abs_memory_usage(self, abs_memory_usage):
+        self.cur_metric.abs_mem_usage  = float(abs_memory_usage)
+
     def cal_abs_used_memory(self):
         self.cur_metric.abs_used_memory = self.config.abs_memory * self.cur_metric.mem_usage  
 
@@ -116,6 +133,9 @@ class QueueData(object):
         self.config.abs_capacity = float(queue_config.abs_capacity)
         self.add_pending(queue_config.pending)
         self.config.state = queue_config.state
+
+    def add_queue_memory_usage(self, queue_memory_usage):
+        self.mus.append(queue_memory_usage.mu)
 
 
     def update_queue_wish(self, queue_wish):
@@ -483,7 +503,7 @@ class RMQueue(metaclass=Singleton):
             
   
 
-    def cal_memory_usage(self, queue=None):            
+    def cal_memory_usage_old(self, queue=None):            
         """
         if current queue is a leaf queue:
             MemoryUsage is the (sum of job memorySeconds )/(self.absMemory * CAL_INTERVAL_IN_SECOND)
@@ -507,7 +527,7 @@ class RMQueue(metaclass=Singleton):
             # First, get its all chilren queue, and call each child's calMemoryUsage function
             children = self.tree.children(queue.tag)
             for child in children:
-                self.cal_memory_usage(child)
+                self.cal_memory_usage_old(child)
 
             # Second, calculate the absUsedMemory of current queue
             abs_used_memory = 0
@@ -517,6 +537,42 @@ class RMQueue(metaclass=Singleton):
            
             # Finally, calculate the memory usage of the queue
             queue.data.set_mem_usage(1.0 * queue.data.get_abs_used_memory() / queue.data.get_abs_memory())
+        return queue.data.get_mem_usage()
+            
+  
+    def cal_memory_usage(self, queue=None):            
+        """
+        if current queue is a leaf queue:
+            MemoryUsage is the abs_memoryusage/self.absMemoryCapacity
+        else:
+            calculate the memory usage of its chilren;
+            calculate the absolute memory of the queue.
+            MemoryUsage = absUsedMemory / absMemory
+        """
+        if queue is None:
+            queue = self.get_root()
+
+        memory_usage = 0.0
+        if queue.is_leaf():
+            abs_memory_usage = queue.data.cal_queue_memory_usage()
+            abs_memory_capacity = queue.data.get_abs_capacity()
+            memory_usage = 100.0 * abs_memory_usage / abs_memory_capacity
+            queue.data.set_mem_usage(memory_usage)
+            queue.data.set_abs_memory_usage(abs_memory_usage)
+        else: # parent queue
+            # First, get its all chilren queue, and call each child's calMemoryUsage function
+            children = self.tree.children(queue.tag)
+            for child in children:
+                self.cal_memory_usage(child)
+
+            # Second, calculate the absUsedMemoryUsage of current queue
+            abs_memory_usage = 0
+            for child in children:
+                abs_memory_usage += child.data.get_abs_memory_usage()
+            queue.data.set_abs_memory_usage(abs_memory_usage)
+           
+            # Finally, calculate the memory usage of the queue
+            queue.data.set_mem_usage(100.0 * queue.data.get_abs_memory_usage() / queue.data.get_abs_capacity())
         return queue.data.get_mem_usage()
             
   
@@ -679,6 +735,17 @@ class RMQueue(metaclass=Singleton):
                child.data.set_abs_memory(queue.data.get_abs_memory() * child.data.get_capacity() / 100)
                self.cal_abs_memory_top_down(child)
 
+    def clear_mus_top_down(self, queue=None):
+        if queue is None:
+            queue = self.get_root()
+
+        if self.is_leaf(queue.tag):
+            queue.data.clear_queue_memory_usage()
+        else:
+           children = self.tree.children(queue.tag) 
+           for child in children:
+               self.clear_mus_top_down(child)
+
     def clear_jobs_top_down(self, queue=None):
         if queue is None:
             queue = self.get_root()
@@ -709,6 +776,7 @@ class RMQueue(metaclass=Singleton):
     def after_scoreing(self):
         self.clear_jobs_top_down()
         self.clear_pendings_top_down()
+        self.clear_mus_top_down()
 
     def score(self):
         self.before_scoring()

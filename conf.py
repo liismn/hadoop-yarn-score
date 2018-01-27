@@ -10,6 +10,7 @@ class Config(metaclass=Singleton):
         cur_time = time.time()
         self.config_file_path = path # fixed
         self.scheduler_metric_path = '../hadoop_util/output/scheduler2.csv' # to be fixed
+        self.scheduler_summary_path = '../hadoop_util/output/scheduler.csv' # to be fixed
         self.job_metric_path = '../hadoop_util/output/app.csv' # to be fixed
         self.job_stopped_path = '../hadoop_util/output/app_stopped.csv' # to be fixed
         self.job_started_path = '../hadoop_util/output/app_started.csv' # to be fixed
@@ -21,6 +22,7 @@ class Config(metaclass=Singleton):
         self.stat_interval = 2 *60 * 60 * 1000 # 2 hours
         self.total_sys_memory = 65536
         self.rest_port = 5000
+        self.valid_queue_count = 12
 
         """
         self.update_interval = 60 * 3 * 1000 # three minutes
@@ -49,6 +51,12 @@ class Config(metaclass=Singleton):
 
     def set_stat_output_file(self, path):
         self.stat_output_file = path
+
+    def get_scheduler_summary_path(self):
+        return self.scheduler_summary_path
+
+    def set_scheduler_summary_path(self, path):
+        self.scheduler_summary_path = path
 
     def get_scheduler_metric_path(self):
         return self.scheduler_metric_path
@@ -85,6 +93,12 @@ class Config(metaclass=Singleton):
 
     def set_sys_total_memory(self, size):
         self.total_sys_memory = size
+
+    def get_valid_queue_count(self):
+        return self.valid_queue_count
+   
+    def set_valid_queue_count(self, count):
+        self.valid_queue_count = count
 
     def get_rest_port(self):
         return self.rest_port
@@ -156,6 +170,7 @@ class Config(metaclass=Singleton):
         self.set_job_stopped_path(data['job_stopped_path'])
         self.set_job_started_path(data['job_started_path'])
         self.set_scheduler_metric_path(data['scheduler_metric_path'])
+        self.set_scheduler_summary_path(data['scheduler_summary_path'])
         self.set_stat_interval(data['stat_interval'])
         self.set_prediction_path(data['prediction_path'])
         # self.set_update_interval(data['update_interval'])
@@ -164,6 +179,7 @@ class Config(metaclass=Singleton):
         self.set_sys_total_memory(data['sys_total_memory'])
         self.set_yarn_config_path(data['yarn_config_file'])
         self.set_rest_port(data['rest_port'])
+        self.set_valid_queue_count(data['valid_queue_count'])
 
     def display(self):
         print('--------------------------------')
@@ -171,6 +187,7 @@ class Config(metaclass=Singleton):
         print('job_stopped_path: \t%s' % self.job_stopped_path)
         print('job_started_path: \t%s' % self.job_started_path)
         print('scheduler_metric_path: \t%s' % self.scheduler_metric_path)
+        print('scheduler_summary_path: \t%s' % self.scheduler_summary_path)
         print('cluster_metric_path: \t%s' % self.cluster_metric_path)
         print('prediction_path \t%s' % self.prediction_path)
         # print('update_interval: \t%ld' % self.update_interval)
@@ -179,6 +196,7 @@ class Config(metaclass=Singleton):
         print('sys_total_memory \t%ld' % self.total_sys_memory)
         print('yarn_config_path \t%s' % self.yarn_config_path)
         print('rest_port \t%d' % self.rest_port)
+        print('valid_queue_count \t%d' % self.valid_queue_count)
         print('--------------------------------')
 
 def get_mtime(filename):

@@ -2,6 +2,7 @@
     "_comment_A": "All time intervals are in second, where update_interval should be less then half of data gather interval, Current value are for test only.", 
     "stat_interval": 7200,
     "scheduler_metric_path": "../hadooputil/output/scheduler2.csv",
+    "scheduler_summary_path": "../hadooputil/output/scheduler.csv",
     "job_metric_path": "../hadooputil/output/runningapp1.csv",
     "job_stopped_path": "../hadooputil/output/finishedapp.csv",
     "job_started_path": "../hadooputil/output/runningapp2.csv",
@@ -11,5 +12,6 @@
     "stat_output_file" : "../hadooputil/output/stat.txt",
     "_comment_B": "System total memory in MB. It will be updated of new data written to cluster_metric_path",
     "sys_total_memory": 16384,
-    "rest_port": 5001
+    "rest_port": 5001,
+    "valid_queue_count": 2
 }

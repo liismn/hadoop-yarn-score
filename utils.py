@@ -37,6 +37,14 @@ class QueueConfig(object):
     def display(self):
         print('queue name: %s, state: %s' %(self.name, self.state))
 
+class QueueMemoryUsage(object):
+    def __init__(self):
+        self.name = ""
+        self.mu = 0.0
+
+    def display(self):
+        print('queue name: %s, memory usage: %.3f' %(self.name, self.mu))
+
 class Job(object):
     def __init__(self, waitTime=0, runTime=0, vcore=0, memorySeconds=0):
         self.wait_time = float(waitTime)

@@ -4,7 +4,7 @@
 # 数据 输入与预处理相关功能
 import pandas as pd
 import numpy as np 
-from utils import Job, QueueConfig, QueueWish
+from utils import Job, QueueConfig, QueueWish, QueueMemoryUsage
 
 def read_scheduler_csv(path):
     df = pd.read_csv(path)
@@ -26,6 +26,19 @@ def read_scheduler_csv(path):
         """
     return confs
 
+def read_memory_usage(path, count):
+    df = pd.read_csv(path)
+    mus = []
+    for i in range(count):
+        mu = QueueMemoryUsage()
+        row = df.iloc[i - count]
+        mu.name = row['queueName']
+        mu.mu = row['memory']
+        # mu.display()
+        mus.append(mu)
+    return mus
+
+    
 
 # TOTOL_MB_INDEX = 15
 def read_cluster_csv(path):
@@ -107,7 +120,8 @@ def read_prediction_csv(path):
     return wishes
 
 if __name__ == '__main__':
-    jobs = read_scheduler_csv('../hadooputil/output/scheduler2.csv')
+    jobs = read_memory_usage('../hadooputil/output/scheduler.csv', 2)
+    # jobs = read_scheduler_csv('../hadooputil/output/scheduler2.csv')
     # jobs = read_app_csv('../hadooputil/output/runningapp1.csv')
     # jobs = read_prediction_csv('../hadooputil/model_out/prediction.csv')
     """

@@ -20,7 +20,6 @@ def get_mtime(filename):
 # parse csv file which includes queue info gathered from yarn scheduler
 def update_scheduler_info(rmq, cfg):
     scheduler_file = cfg.get_scheduler_metric_path()
-    ts = get_mtime(scheduler_file)
     queue_configs = datainput.read_scheduler_csv(scheduler_file) 
     for qc in queue_configs:
         queue = rmq.get_queue(qc.name)
@@ -30,6 +29,17 @@ def update_scheduler_info(rmq, cfg):
         queue.data.update_queue_config(qc)
         #print(qc.name)
 
+# parse csv file which includes memory usage info of each queue 
+def update_mu_info(rmq, cfg):
+    mu_file = cfg.get_scheduler_summary_path()
+    count = cfg.get_valid_queue_count()
+    queue_mus = datainput.read_memory_usage(mu_file, count)
+    for qmu in queue_mus:
+        queue = rmq.get_queue(qmu.name)
+        if queue is None:
+            print("Unknown queue name", qmu.name)
+            continue
+        queue.data.add_queue_memory_usage(qmu)
 
 # parse csv file which includes stopped app info gathered from yarn scheduler
 def update_app_stopped_info(rmq, cfg):
@@ -100,10 +110,11 @@ def update_predict_info(rmq, cfg):
 
 def update_all_info(rmq, cfg):
     update_scheduler_info(rmq, cfg)
+    update_mu_info(rmq, cfg)
     update_cluster_info(rmq, cfg)
-    update_app_info(rmq, cfg)
-    update_app_stopped_info(rmq, cfg)
-    update_app_started_info(rmq, cfg)
+    # update_app_info(rmq, cfg)
+    # update_app_stopped_info(rmq, cfg)
+    # update_app_started_info(rmq, cfg)
 
 def score(rmq, cfg):
     rmq.score()
